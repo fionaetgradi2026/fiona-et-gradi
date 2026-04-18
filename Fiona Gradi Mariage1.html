@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiona & Gradi — 28 Août 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:      #FAF7F0;
+  --ivory:      #F5EFE4;
+  --sand:       #E8DDD0;
+  --sand-dark:  #D6C9B6;
+  --blush:      #D4A882;
+  --gold:       #B8914A;
+  --gold-light: #CFA85E;
+  --gold-pale:  #E8D5A8;
+  --text:       #4A3B28;
+  --muted:      #8A7660;
+  --white:      #FFFDF8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Cursor */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+}
+.cursor-ring {
+  width: 30px; height: 30px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transition: all 0.25s ease; opacity: 0.5;
+}
+
+/* Petals */
+#petals { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+.petal { position: absolute; top: -20px; opacity: 0; animation: fall linear infinite; }
+.petal::before {
+  content: ''; display: block; width: 100%; height: 100%;
+  background: var(--blush); border-radius: 150% 0 150% 0; opacity: 0.3;
+}
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.25; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 80px 24px;
+  overflow: hidden; z-index: 2;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% -10%, rgba(232,213,168,0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(212,168,130,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 5% 60%,  rgba(232,213,168,0.2) 0%, transparent 60%),
+    var(--cream);
+}
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23B8914A' stroke-width='0.7' opacity='0.1'%3E%3Cellipse cx='400' cy='400' rx='370' ry='370'/%3E%3Cellipse cx='400' cy='400' rx='310' ry='310'/%3E%3Cellipse cx='400' cy='400' rx='250' ry='250'/%3E%3Cellipse cx='400' cy='400' rx='190' ry='190'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 800px; background-position: center; background-repeat: no-repeat;
+}
+.hero-content { position: relative; z-index: 2; }
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 44px;
+  opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+}
+.names-block { opacity: 0; animation: fadeUp 1.2s ease 0.5s forwards; }
+.names {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(80px, 15vw, 140px); line-height: 0.85;
+  color: var(--text); letter-spacing: -0.02em;
+}
+.names em { font-style: italic; color: var(--gold); }
+.names .amp {
+  font-style: italic; font-size: 0.55em; color: var(--blush);
+  display: block; line-height: 1.1; margin: 8px 0;
+}
+.hero-divider {
+  display: flex; align-items: center; gap: 20px;
+  margin: 48px auto; width: 260px;
+  opacity: 0; animation: fadeUp 1s ease 0.9s forwards;
+}
+.hero-divider span { flex: 1; height: 1px; background: var(--sand-dark); }
+.hero-divider i { font-style: normal; font-family: 'Cormorant Garamond', serif; color: var(--gold); font-size: 18px; }
+
+.date-block { opacity: 0; animation: fadeUp 1s ease 1.1s forwards; }
+.date-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(26px, 4vw, 42px); font-weight: 300;
+  letter-spacing: 0.06em; color: var(--text);
+}
+.date-sub { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+
+.scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0; animation: fadeIn 1s ease 2.2s forwards; z-index: 2;
+}
+.scroll-hint span { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+.scroll-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2.2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:0;transform:scaleY(0.2)} 50%{opacity:1;transform:scaleY(1)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* ── LAYOUT ── */
+.section-wrap { position: relative; z-index: 2; padding: 90px 24px; max-width: 960px; margin: 0 auto; }
+.section-label { font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: block; }
+h2 {
+  font-family: 'Cormorant Garamond', serif; font-weight: 300;
+  font-size: clamp(36px, 6vw, 54px); line-height: 1.1;
+  color: var(--text); margin-bottom: 28px;
+}
+h2 em { font-style: italic; color: var(--gold); }
+.text-center { text-align: center; }
+p.body-text { font-size: 16px; line-height: 1.9; color: var(--muted); max-width: 540px; margin: 0 auto; }
+
+.gold-divider { display: flex; align-items: center; gap: 24px; margin: 60px auto; max-width: 380px; }
+.gold-divider span { flex: 1; height: 1px; background: var(--sand-dark); }
+.gold-divider svg { fill: var(--gold); opacity: 0.6; flex-shrink: 0; }
+
+/* ── SEPARATOR BAND ── */
+.band {
+  position: relative; z-index: 2;
+  background: var(--ivory);
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  padding: 44px 40px;
+  text-align: center;
+}
+.band-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: clamp(18px, 3vw, 24px);
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.band-text em { color: var(--gold); font-style: italic; }
+.band-ref {
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-top: 14px; display: block;
+}
+
+/* ── TIMELINE ── */
+.timeline { position: relative; max-width: 620px; margin: 56px auto 0; }
+.timeline::before {
+  content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--sand-dark) 10%, var(--sand-dark) 90%, transparent);
+  transform: translateX(-50%);
+}
+.tl-item { display: grid; grid-template-columns: 1fr 50px 1fr; gap: 20px; align-items: center; margin-bottom: 52px; }
+.tl-left { text-align: right; }
+.tl-right { text-align: left; }
+.tl-item:nth-child(even) .tl-left { order: 3; text-align: left; }
+.tl-item:nth-child(even) .tl-right { order: 1; text-align: right; }
+.tl-item:nth-child(even) .tl-center { order: 2; }
+.tl-time { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; color: var(--gold); line-height: 1; }
+.tl-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); font-weight: 400; margin-top: 6px; }
+.tl-desc { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+.tl-badge {
+  display: inline-block; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 3px 9px; border: 1px solid var(--blush); color: var(--blush);
+  border-radius: 100px; margin-bottom: 6px;
+}
+.tl-dot {
+  width: 13px; height: 13px; background: var(--cream);
+  border: 2px solid var(--gold); border-radius: 50%;
+  margin: 0 auto; position: relative; z-index: 1;
+}
+.tl-dot::after { content: ''; position: absolute; inset: 2px; background: var(--gold); border-radius: 50%; }
+
+/* ── LIEUX GRID ── */
+.lieu-map-inline {
+  width: 100%;
+  height: 150px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--sand);
+}
+.lieu-map-inline iframe {
+  width: 100%; height: 100%; border: none;
+  filter: sepia(15%) saturate(85%) brightness(1.02); display: block;
+}
+.lieux-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 48px; }
+
+.lieu-header {
+  background: var(--ivory);
+  border-bottom: 1px solid var(--sand);
+  padding: 28px 28px 24px;
+  text-align: center;
+}
+.lieu-body {
+  padding: 24px 28px 28px;
+  text-align: left;
+}
+.lieu-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.lieu-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--ivory);
+  border: 1px solid var(--sand);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.lieu-icon svg { width: 14px; height: 14px; color: var(--gold); }
+.lieu-address-block { flex: 1; }
+.lieu-address-label {
+  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 3px;
+}
+.lieu-address { font-size: 13px; color: var(--muted); line-height: 1.8; }
+.lieu-subtitle { font-size: 15px; color: var(--muted); font-style: italic; }
+.lieu-map-embed {
+  width: 100%; height: 180px;
+  border-radius: 3px; overflow: hidden;
+  border: 1px solid var(--sand);
+  margin: 18px 0;
+  background: var(--ivory);
+}
+.lieu-map-embed iframe { width: 100%; height: 100%; border: none; filter: sepia(15%) saturate(80%) brightness(1.02); display: block; }
+.full-btn { width: 100%; justify-content: center; }
+.lieu-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: 4px; overflow: hidden;
+  box-shadow: 0 16px 48px rgba(140,110,70,0.08);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.lieu-card:hover { box-shadow: 0 24px 64px rgba(140,110,70,0.14); transform: translateY(-3px); }
+.lieu-map { width: 100%; height: 200px; background: var(--ivory); }
+.lieu-map iframe { width: 100%; height: 100%; border: none; filter: sepia(20%) saturate(80%) brightness(1.02); display: block; }
+.lieu-info { padding: 28px; }
+.lieu-tag {
+  display: inline-block; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  padding: 4px 12px; background: var(--ivory); color: var(--gold);
+  border: 1px solid var(--sand-dark); border-radius: 100px; margin-bottom: 14px;
+}
+.lieu-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+.lieu-address { font-size: 13px; color: var(--muted); line-height: 1.9; margin-bottom: 22px; }
+.btn-map {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; background: transparent;
+  border: 1px solid var(--gold); color: var(--gold);
+  font-family: 'Jost', sans-serif; font-size: 10px;
+  font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase;
+  text-decoration: none; cursor: none; transition: all 0.3s ease;
+}
+.btn-map:hover { background: var(--gold); color: var(--white); }
+
+/* ── RSVP — full light ── */
+.rsvp-section {
+  position: relative; z-index: 2;
+  background: var(--ivory);
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  padding: 100px 24px;
+  overflow: hidden;
+}
+.rsvp-section::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 50%, rgba(232,213,168,0.5) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 90% 40%, rgba(212,168,130,0.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.rsvp-inner { max-width: 620px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* Form fields in light theme */
+.children-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(184,145,74,0.07);
+  border: 1px solid rgba(184,145,74,0.25);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-top: 28px;
+  text-align: left;
+}
+.children-notice-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.children-notice p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--muted);
+  font-style: italic;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 48px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group.full { grid-column: 1 / -1; }
+
+label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+
+input, select, textarea {
+  background: var(--white);
+  border: 1px solid var(--sand-dark);
+  border-radius: 2px; padding: 14px 16px;
+  color: var(--text); font-family: 'Jost', sans-serif;
+  font-size: 14px; font-weight: 300; outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; cursor: none;
+  -webkit-appearance: none; appearance: none;
+}
+input::placeholder, textarea::placeholder { color: var(--sand-dark); }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184,145,74,0.1);
+}
+select {
+  background-color: var(--white);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='7' viewBox='0 0 12 7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8914A' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px;
+}
+select option { background: #FAF7F0; color: #4A3B28; }
+textarea { resize: vertical; min-height: 100px; }
+
+/* Radio pills light */
+.radio-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.radio-pill input[type="radio"] { display: none; }
+.radio-pill label {
+  display: inline-block; padding: 10px 22px;
+  border: 1px solid var(--sand-dark); border-radius: 100px;
+  cursor: none; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); transition: all 0.25s ease; user-select: none;
+  background: var(--white);
+}
+.radio-pill input[type="radio"]:checked + label {
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(184,145,74,0.07);
+}
+.radio-pill label:hover { border-color: var(--blush); color: var(--text); }
+
+.btn-submit {
+  margin-top: 36px; width: 100%; padding: 18px 40px;
+  background: var(--gold); border: none; color: var(--white);
+  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase; cursor: none;
+  transition: background 0.3s ease, opacity 0.3s ease;
+}
+.btn-submit:hover { background: var(--gold-light); }
+.btn-submit:disabled { opacity: 0.5; }
+
+.success-msg { display: none; text-align: center; padding: 60px 20px; animation: fadeIn 0.7s ease; }
+.success-icon { margin-bottom: 24px; display: flex; justify-content: center; }
+.success-msg h3 {
+  font-family: 'Cormorant Garamond', serif; font-size: 40px;
+  font-style: italic; color: var(--gold); margin-bottom: 16px;
+}
+.success-msg p { color: var(--muted); font-size: 15px; line-height: 1.9; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--sand);
+  border-top: 1px solid var(--sand-dark);
+  padding: 60px 24px; text-align: center;
+  position: relative; z-index: 2;
+}
+.footer-ornement {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-style: italic;
+  color: var(--gold); margin-bottom: 16px; letter-spacing: 0.02em;
+}
+.footer-note {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
+.footer-hearts { color: var(--blush); margin: 16px 0; font-size: 14px; letter-spacing: 0.2em; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease, transform 0.9s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .lieu-map-inline {
+  width: 100%;
+  height: 150px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--sand);
+}
+.lieu-map-inline iframe {
+  width: 100%; height: 100%; border: none;
+  filter: sepia(15%) saturate(85%) brightness(1.02); display: block;
+}
+.lieux-grid { grid-template-columns: 1fr; }
+  .children-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(184,145,74,0.07);
+  border: 1px solid rgba(184,145,74,0.25);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-top: 28px;
+  text-align: left;
+}
+.children-notice-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.children-notice p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--muted);
+  font-style: italic;
+}
+.form-grid { grid-template-columns: 1fr; }
+  .timeline::before { left: 22px; transform: none; }
+  .tl-item { grid-template-columns: 44px 1fr; gap: 14px; }
+  .tl-item .tl-left { display: none; }
+  .tl-item:nth-child(even) .tl-left { display: flex; flex-direction: column; order: 3; text-align: left; }
+  .tl-item:nth-child(even) .tl-right { display: none; }
+  .tl-item:nth-child(even) .tl-center { order: 1; }
+  .tl-dot { margin: 0; }
+  .lieu-info { padding: 22px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="petals"></div>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="eyebrow">Nous avons l'honneur de vous inviter à célébrer notre mariage civil</p>
+    <div class="names-block">
+      <div class="names">
+        <em>Fiona</em>
+        <span class="amp">&</span>
+        <em>Gradi</em>
+      </div>
+    </div>
+    <div class="hero-divider"><span></span><i>✦</i><span></span></div>
+    <div class="date-block">
+      <div class="date-main">Vendredi 28 Août 2026</div>
+      <div class="date-sub">Montmorency &nbsp;·&nbsp; Méry-sur-Oise</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Découvrir</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ══ CITATION BAND ══ -->
+<div class="band">
+  <p class="band-text">« Ainsi, ils ne sont plus deux mais ne font qu'un.<br>Que l'homme ne sépare donc pas ce que Dieu a uni. »</p>
+  <p class="band-ref">— Matthieu 19, 6</p>
+</div>
+
+<!-- ══ INTRO ══ -->
+<div class="section-wrap text-center">
+  <span class="section-label reveal">Le Grand Jour</span>
+  <h2 class="reveal">C'est avec une immense joie<br><em>que nous vous convions</em></h2>
+  <p class="body-text reveal">
+    Entourés de ceux que nous aimons, nous célébrerons notre union dans la douceur d'une fin d'été.
+    Votre présence à nos côtés rendra ce moment inoubliable.
+  </p>
+  <div class="gold-divider reveal">
+    <span></span>
+    <svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z"/></svg>
+    <span></span>
+  </div>
+</div>
+
+<!-- ══ PROGRAMME ══ -->
+<div class="section-wrap" style="background: var(--white); border-radius: 6px; border: 1px solid var(--sand); box-shadow: 0 12px 40px rgba(140,110,70,0.06); max-width: 860px;">
+  <div class="text-center">
+    <span class="section-label reveal">Déroulé de la journée</span>
+    <h2 class="reveal">Le programme<br><em>de notre célébration</em></h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-left"><div class="tl-time">13h30</div></div>
+      <div class="tl-center"><div class="tl-dot"></div></div>
+      <div class="tl-right">
+        <div class="tl-badge">Cérémonie civile</div>
+        <div class="tl-label">Mairie de Montmorency · 13h30</div>
+        <div class="tl-desc">Hôtel de Ville<br>2 Av. Foch, Montmorency</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-left">
+        <div class="tl-badge">Vin d'honneur</div>
+        <div class="tl-label">Domaine La Bastide (Le Mas) · 18h00</div>
+        <div class="tl-desc">Cocktail & canapés<br>en terrasse</div>
+      </div>
+      <div class="tl-center"><div class="tl-dot"></div></div>
+      <div class="tl-right"><div class="tl-time">18h00</div></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-left"><div class="tl-time">20h00</div></div>
+      <div class="tl-center"><div class="tl-dot"></div></div>
+      <div class="tl-right">
+        <div class="tl-badge">Dîner</div>
+        <div class="tl-label">Domaine La Bastide (Le Mas) · 20h00</div>
+        <div class="tl-desc">Dîner, musique<br>& danse</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIEUX ══ -->
+<div class="section-wrap text-center">
+  <span class="section-label reveal">Où nous rejoindre</span>
+  <h2 class="reveal">Les lieux de<br><em>notre célébration</em></h2>
+  <div class="lieux-grid">
+
+    <!-- MAIRIE -->
+    <div class="lieu-card reveal">
+      <div class="lieu-header">
+        <span class="lieu-tag">Cérémonie civile · 13h30</span>
+        <div class="lieu-name">Hôtel de Ville<br>de Montmorency</div>
+      </div>
+      <div class="lieu-body">
+        <div class="lieu-detail-row">
+          <div class="lieu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="lieu-address-block">
+            <div class="lieu-address-label">Adresse</div>
+            <div class="lieu-address">2 Avenue Foch<br>95160 Montmorency</div>
+          </div>
+        </div>
+        <div class="lieu-detail-row">
+          <div class="lieu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="lieu-address-block">
+            <div class="lieu-address-label">Horaire</div>
+            <div class="lieu-address">13h30</div>
+          </div>
+        </div>
+        <div class="lieu-map-embed">
+          <iframe src="https://maps.google.com/maps?q=2+Avenue+Foch+95160+Montmorency&output=embed&z=15"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=2+Avenue+Foch+95160+Montmorency" target="_blank" class="btn-map full-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Obtenir l'itinéraire
+        </a>
+      </div>
+    </div>
+
+    <!-- DOMAINE -->
+    <div class="lieu-card reveal">
+      <div class="lieu-header">
+        <span class="lieu-tag">Réception & Soirée · 18h00</span>
+        <div class="lieu-name">Domaine La Bastide<br><span class="lieu-subtitle">(Le Mas)</span></div>
+      </div>
+      <div class="lieu-body">
+        <div class="lieu-detail-row">
+          <div class="lieu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="lieu-address-block">
+            <div class="lieu-address-label">Adresse</div>
+            <div class="lieu-address">80 rue Pierre Curie<br>95540 Méry-sur-Oise</div>
+          </div>
+        </div>
+        <div class="lieu-detail-row">
+          <div class="lieu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="lieu-address-block">
+            <div class="lieu-address-label">Horaires</div>
+            <div class="lieu-address">Vin d'honneur 18h00 · Dîner 20h00</div>
+          </div>
+        </div>
+        <div class="lieu-map-embed">
+          <iframe src="https://maps.google.com/maps?q=80+rue+Pierre+Curie+95540+Mery-sur-Oise&output=embed&z=15"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=80+rue+Pierre+Curie+95540+Mery-sur-Oise" target="_blank" class="btn-map full-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Obtenir l'itinéraire
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ RSVP ══ -->
+<div class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="text-center">
+      <span class="section-label reveal">Confirmation de présence</span>
+      <h2 class="reveal">Répondez<br><em>avant le 1er juin 2026</em></h2>
+      <p class="body-text reveal">
+        Merci de bien vouloir confirmer votre présence afin que nous puissions préparer au mieux cette journée exceptionnelle.
+      </p>
+      <div class="children-notice reveal">
+        <div class="children-notice-icon">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.3">
+    <circle cx="12" cy="12" r="9"/>
+    <circle cx="12" cy="12" r="5.5"/>
+  </svg>
+</div>
+        <p>Cette célébration est réservée aux adultes.<br>Nous vous remercions de votre compréhension et espérons que vous pourrez vous joindre à nous pour partager ce moment si précieux.</p>
+      </div>
+    </div>
+
+    <form id="rsvpForm" action="https://formspree.io/f/gradi.t@yahoo.com" method="POST">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="Prénom" placeholder="Votre prénom" required>
+        </div>
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="Nom" placeholder="Votre nom" required>
+        </div>
+        <div class="form-group full">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="Email" placeholder="votre@email.com">
+        </div>
+        <div class="form-group full">
+          <label>Serez-vous présent(e) ?</label>
+          <div class="radio-group">
+            <div class="radio-pill">
+              <input type="radio" name="Présence" id="pOui" value="Oui — Avec plaisir !" required>
+              <label for="pOui">✓ &nbsp;Avec plaisir !</label>
+            </div>
+            <div class="radio-pill">
+              <input type="radio" name="Présence" id="pNon" value="Non — Absent(e)">
+              <label for="pNon">✗ &nbsp;Je serai absent(e)</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group full" id="msgSection" style="display:none">
+          <label for="message">Un message pour les mariés</label>
+          <textarea id="message" name="Message" placeholder="Vos mots doux, questions..."></textarea>
+        </div>
+      </div>
+      <input type="hidden" name="_subject" value="🌸 Nouvelle confirmation — Mariage Fiona & Gradi">
+<input type="hidden" name="_language" value="fr">
+      <button type="submit" class="btn-submit" id="submitBtn">Confirmer ma présence</button>
+    </form>
+
+    <div class="success-msg" id="successMsg">
+      <div class="success-icon">
+  <svg width="52" height="32" viewBox="0 0 60 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="18" r="14" stroke="#B8914A" stroke-width="2.2"/>
+    <circle cx="20" cy="18" r="9" stroke="#B8914A" stroke-width="1.2" opacity="0.4"/>
+    <circle cx="40" cy="18" r="14" stroke="#B8914A" stroke-width="2.2"/>
+    <circle cx="40" cy="18" r="9" stroke="#B8914A" stroke-width="1.2" opacity="0.4"/>
+  </svg>
+</div>
+      <h3>Merci infiniment !</h3>
+      <p>Votre réponse a bien été enregistrée.<br>Nous avons hâte de vous retrouver<br>le <strong style="color:var(--gold);font-weight:400">28 août 2026</strong> !</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-ornement">Fiona & Gradi</div>
+  <div class="footer-hearts">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <div class="footer-note">28 Août 2026 &nbsp;·&nbsp; Montmorency &nbsp;&amp;&nbsp; Méry-sur-Oise</div>
+</footer>
+
+<script>
+// Cursor
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){
+  cursor.style.left=mx-4+'px';cursor.style.top=my-4+'px';
+  rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;
+  ring.style.left=rx-15+'px';ring.style.top=ry-15+'px';
+  requestAnimationFrame(loop);
+})();
+
+// Petals
+const pc=document.getElementById('petals');
+function addPetal(){
+  const p=document.createElement('div');p.className='petal';
+  const s=Math.random()*8+4;
+  p.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s*1.5}px;animation-duration:${Math.random()*9+7}s;animation-delay:${Math.random()*4}s`;
+  pc.appendChild(p);setTimeout(()=>p.remove(),18000);
+}
+for(let i=0;i<10;i++)addPetal();
+setInterval(addPetal,900);
+
+// Reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){e.target.style.transitionDelay=(i%3)*0.12+'s';e.target.classList.add('visible');}
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// RSVP logic
+document.querySelectorAll('input[name="Présence"]').forEach(inp=>{
+  inp.addEventListener('change',()=>{
+    const oui=inp.value.startsWith('Oui');
+
+    document.getElementById('msgSection').style.display='flex';
+  });
+});
+document.getElementById('rsvpForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+  const form = document.getElementById('rsvpForm');
+  const data = new FormData(form);
+  try {
+    const response = await fetch('https://formspree.io/f/xvzdrgdr', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (response.ok) {
+      form.style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    } else {
+      btn.textContent = 'Confirmer ma présence';
+      btn.disabled = false;
+      alert('Une erreur est survenue. Veuillez réessayer.');
+    }
+  } catch(err) {
+    btn.textContent = 'Confirmer ma présence';
+    btn.disabled = false;
+    alert('Une erreur est survenue. Veuillez réessayer.');
+  }
+});
+</script>
+</body>
+</html>
